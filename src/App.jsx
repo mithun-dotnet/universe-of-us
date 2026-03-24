@@ -7,14 +7,15 @@ import { memories } from './data/memories'
 
 function App() {
   const [screen, setScreen] = useState('landing')
+  const [memoryList, setMemoryList] = useState(memories)
   const [selectedMemoryId, setSelectedMemoryId] = useState(null)
   const [unlockedIds, setUnlockedIds] = useState([])
   const [musicEnabled, setMusicEnabled] = useState(false)
   const bgMusicRef = useRef(null)
 
   const selectedMemory = useMemo(
-    () => memories.find((memory) => memory.id === selectedMemoryId) ?? null,
-    [selectedMemoryId],
+    () => memoryList.find((memory) => memory.id === selectedMemoryId) ?? null,
+    [memoryList, selectedMemoryId],
   )
 
   useEffect(() => {
@@ -38,6 +39,20 @@ function App() {
   const handleOpenMemory = (id) => {
     unlockMemory(id)
     setSelectedMemoryId(id)
+  }
+
+  const handleAddMemory = (memory) => {
+    setMemoryList((prev) => [
+      ...prev,
+      {
+        id: prev.length ? Math.max(...prev.map((m) => m.id)) + 1 : 1,
+        ...memory,
+      },
+    ])
+  }
+
+  const handleUpdateMemory = (id, updates) => {
+    setMemoryList((prev) => prev.map((m) => (m.id === id ? { ...m, ...updates } : m)))
   }
 
   const handleNextMemory = () => {
@@ -70,8 +85,28 @@ function App() {
         ref={bgMusicRef}
         loop
         preload="none"
-        src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_72f34f6f6e.mp3?filename=romantic-piano-114970.mp3"
+        src={import.meta.env.VITE_MUSIC_URL || "https://cdn.pixabay.com/download/audio/2022/03/10/audio_72f34f6f6e.mp3?filename=romantic-piano-114970.mp3"}
       />
+      {/* 
+        To use "Tum Hi Ho" from Aashiqui 2, you have these legal options:
+        
+        1. SPOTIFY EMBED (Recommended):
+           - Add to .env: VITE_MUSIC_URL=spotify:track:5kZjWw0D4fHwCRYhRXdxHQ
+           - Use Spotify Web API to fetch preview URL
+        
+        2. YOUTUBE EMBED:
+           - Use YouTube Data API or embed player
+           - Extract audio using yt-dlp (check local laws)
+        
+        3. PURCHASE LICENSE:
+           - iTunes, Amazon Music, or Wynk Music
+           - Upload licensed file to your public folder
+           - Use: /your-music-file.mp3
+        
+        4. ROYALTY-FREE ALTERNATIVE:
+           - Search "Tum Hi Ho" royalty-free covers on Pixabay/Freepik
+           - Use VITE_MUSIC_URL in .env for easy swaps
+      */}
 
       <button
         type="button"
@@ -86,16 +121,17 @@ function App() {
 
         {screen === 'galaxy' && (
           <Galaxy
-            memories={memories}
+            memories={memoryList}
             unlockedIds={unlockedIds}
             onOpenMemory={handleOpenMemory}
+            onAddMemory={handleAddMemory}
             onFinish={() => setScreen('final')}
           />
         )}
 
         {screen === 'final' && (
           <FinalScreen
-            totalMemories={memories.length}
+            totalMemories={memoryList.length}
             unlockedCount={unlockedIds.length}
             onReplay={handleReplay}
           />
@@ -105,10 +141,11 @@ function App() {
       {selectedMemory && screen === 'galaxy' && (
         <MemoryModal
           memory={selectedMemory}
-          totalCount={memories.length}
-          currentIndex={memories.findIndex((memory) => memory.id === selectedMemory.id) + 1}
+          totalCount={memoryList.length}
+          currentIndex={memoryList.findIndex((memory) => memory.id === selectedMemory.id) + 1}
           onClose={() => setSelectedMemoryId(null)}
           onNext={handleNextMemory}
+          onUpdateMemory={handleUpdateMemory}
         />
       )}
     </main>

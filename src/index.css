@@ -7,12 +7,18 @@
 :root {
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'Manrope', 'Segoe UI', sans-serif;
-  --bg-deep: #020617;
-  --bg-mid: #172554;
-  --bg-warm: #78350f;
-  --star: rgba(255, 255, 255, 0.82);
-  --text-primary: #fef3c7;
-  --text-secondary: #cbd5e1;
+  --bg-deep: #150b2f;
+  --bg-mid: #311b5d;
+  --bg-warm: #a5337a;
+  --star: rgba(255, 175, 251, 0.9);
+  --text-primary: #ffe4f7;
+  --text-secondary: #ffccd9;
+}
+
+:root {
+  --accent-light: #ff88d9;
+  --accent-strong: #ff507f;
+  --accent-deep: #872464;
 }
 
 * {
@@ -30,9 +36,14 @@ body {
   font-family: var(--font-sans);
   color: var(--text-primary);
   background:
-    radial-gradient(circle at 10% 10%, rgba(251, 191, 36, 0.1), transparent 35%),
-    radial-gradient(circle at 90% 20%, rgba(56, 189, 248, 0.12), transparent 35%),
-    linear-gradient(130deg, var(--bg-deep), var(--bg-mid), #0f172a, var(--bg-warm));
+    radial-gradient(circle at 20% 25%, rgba(255, 139, 221, 0.12), transparent 35%),
+    radial-gradient(circle at 80% 18%, rgba(255, 114, 191, 0.12), transparent 35%),
+    linear-gradient(130deg, var(--bg-deep), var(--bg-mid), #2a0f4f, var(--bg-warm));
+}
+
+* {
+  color: var(--text-primary);
+  /* ensure consistent romantic color apply */
 }
 
 .font-display {
